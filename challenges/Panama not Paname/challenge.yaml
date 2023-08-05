@@ -14,11 +14,10 @@ arguments:
   - "0x44455320455041554c455320464f52544553204554204d5553434c4553"
   - "0x52414d4552205055495320504f555353455220535552204c45532042524153"
 amount: 0
-
 files:
   - bin: Door.bin
     abi: Door.abi
     sol: challenge.sol
     visibility: 1
-flag: APT42{f4k3_fl4g_f0r_t3st1ng}
+flag: APT42{gRaC3_a_h@cKsh3eT_v0u5_s@v3z_Ma1nt3NanT_5uRF3r}
 check: check.py

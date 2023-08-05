@@ -10,9 +10,11 @@ class Client:
     
     def faucet(self, to_address):
         res = Faucet.get_instance().send_ether(to_address)
-        if res:
+        if res == 0:
             send_message(self.conn, b'Ether sent')
-        else:
+        elif res == -1:
+            send_message(self.conn, b'Your address is invalid')
+        elif res == -2:
             send_message(self.conn, b'You already have ether')
         
     

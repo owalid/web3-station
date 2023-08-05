@@ -4,6 +4,7 @@
 
 Create a `.env` with the following content at the root of the repository
 ```env
+WEB3_RPC_URL=http://localhost:8545
 WEB3_PRIVATE_KEY=0x8777c5433381215bb87adb8f92076da014bd789184ef85b2444bb34bbaafa707
 WEB3_PUBLIC_KEY=0xbA8DCA496adc3Dc6af79bDA27e547024b11465ce
 ```

@@ -7,7 +7,7 @@ from py_server.utils import receive_message, send_message
 
 SIZE_OF_RECEIVE = 5
 HOST = '0.0.0.0'
-PORT = 5554
+PORT = 5555
 
 class SocketServer:
     __instance = None
@@ -76,7 +76,7 @@ class SocketServer:
                     else:
                         action = challenges_config.ACTIONS[int(action_index)]
                         action = action.lower()
-                        challenge_index = None
+                        param_client = None
                         if action == 'exit':
                             self.exit_client(conn, index)
                             break
@@ -86,13 +86,20 @@ class SocketServer:
                             r = receive_message(conn, SIZE_OF_RECEIVE)
                             if not r:
                                 break
-                            challenge_index = r.decode().strip()
-                            if not challenge_index.isnumeric() or int(challenge_index) > len(challenges_config.CHALLENGES) or int(challenge_index) < 0:
-                                send_message(conn, challenge_index.encode() + b" index is not allowed\n")
+                            param_client = r.decode().strip()
+                            if not param_client.isnumeric() or int(param_client) > len(challenges_config.CHALLENGES) or int(param_client) < 0:
+                                send_message(conn, param_client.encode() + b" index is not allowed\n")
                                 continue
-                            if int(challenge_index) == len(challenges_config.CHALLENGES):
+                            if int(param_client) == len(challenges_config.CHALLENGES):
                                 continue
-                        self.clients[index].process_action(action.lower(), challenge_index)
+                        if action == 'faucet':
+                            send_message(conn, b'Send me your address, I will send you some ether', True)
+                            r = receive_message(conn, 30)
+                            if not r:
+                                break
+                            param_client = r.decode().strip()
+
+                        self.clients[index].process_action(action.lower(), param_client)
         except Exception as e:
             print(e)
             self.exit_client(conn, index)

@@ -18,5 +18,5 @@ files:
     abi: Door.abi
     sol: challenge.sol
     visibility: 1
-flag: APT42{f4k3_fl4g_f0r_t3st1ng}
+flag: APT42{mY_b3D_1s_fUlL_0f_c@5H}
 check: check.py
