@@ -1,0 +1,77 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes29",
+        "name": "_gettingToLineUpSequence",
+        "type": "bytes29"
+      },
+      {
+        "internalType": "bytes31",
+        "name": "_ridingTheWaveSequence",
+        "type": "bytes31"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "goToBeach",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes29",
+        "name": "armRotationSequence",
+        "type": "bytes29"
+      }
+    ],
+    "name": "goToLineUp",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "location",
+    "outputs": [
+      {
+        "internalType": "enum SurfSequence.Location",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes31",
+        "name": "armRotationSequence",
+        "type": "bytes31"
+      }
+    ],
+    "name": "takeWave",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tookWave",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

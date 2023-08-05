@@ -1,0 +1,11 @@
+cancunbeh:
+  name: "Cancúnbeh"
+  path: "challenges/Cancúnbeh/challenge.yaml"
+
+panama_not_paname:
+  name: "Panama not Paname"
+  path: "challenges/Panama not Paname/challenge.yaml"
+
+to_the_monaco:
+  name: "To the Monaco"
+  path: "challenges/To the Monaco/challenge.yaml"
