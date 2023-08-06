@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from os import getenv
 import sys
 import logging
+import importlib
 load_dotenv()
 
 WEB3_PRIVATE_KEY=getenv("WEB3_PRIVATE_KEY")
@@ -59,12 +60,14 @@ class Contract:
         return res
 
     def validate(self) -> (bool, str):
-        current_path = sys.path # backup current path
+        # current_path = sys.path # backup current path
         # change path to challenge directory
         sys.path.append(self.challenge_config['path'])
-        from check import check
-        validated = check(self.web3, self.abi, self.contract_address)
-        sys.path = current_path
+        import check as ContractChecker
+        importlib.reload(ContractChecker)
+        validated = ContractChecker.check(self.web3, self.abi, self.contract_address)
+        # sys.path = current_path
+        sys.path.remove(self.challenge_config['path'])
         if validated:
             self.logger.info("validation of challenge %s successfull", self.challenge_config['name'])
             return (True, f"{Back.GREEN}{Style.BRIGHT}SUCCESS{Style.RESET_ALL} Challenge {self.challenge_config['name']} completed successfully\n\nThere is your flag: {self.challenge_config['flag']}\n\n")

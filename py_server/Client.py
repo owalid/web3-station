@@ -53,9 +53,9 @@ class Client:
         send_message(self.conn, b'\nValidating...\n\n')
         result, msg = self.current_deploy.validate()
         send_message(self.conn, msg.encode())
-        # if result == True:
-        #     del self.current_deploy
-        #     self.current_deploy = None
+        if result == True:
+            del self.current_deploy
+            self.current_deploy = None
 
     def help(self):
         send_message(self.conn, b"""
