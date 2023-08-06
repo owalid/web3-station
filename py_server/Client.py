@@ -1,6 +1,7 @@
 from py_server.utils import receive_message, send_message
 from py_server.Contract import Contract
 from py_server.Faucet import Faucet
+from py_server.utils import getClientLogger, destroyLogger
 
 class Client:
     def __init__(self, conn, addr, uuid):
@@ -8,9 +9,16 @@ class Client:
         self.address = addr
         self.uuid = uuid 
         self.current_deploy = None
-    
+        self.logger = getClientLogger(self)
+        self.logger.info(f"new connection from %s:%d", self.address[0], self.address[1])
+
+    def __del__(self):
+        # It's normal if this function doesn't trigger instantly btw.
+        self.logger.info(f"client disconnected %s:%d", self.address[0], self.address[1])
+        destroyLogger(self)
+
     def faucet(self, to_address):
-        res = Faucet.get_instance().send_ether(to_address)
+        res = Faucet.get_instance().send_ether(to_address, self.logger)
         if res == 0:
             send_message(self.conn, b'Some juicy ethers was sent\n\n')
         elif res == -1:
@@ -19,7 +27,8 @@ class Client:
             send_message(self.conn, b'You already have enough ethers\n\n')
 
     def list(self, challenge_index):
-        send_message(self.conn, Contract(int(challenge_index)).get_challenge_info().encode())
+        send_message(self.conn, b"\n")
+        send_message(self.conn, Contract(int(challenge_index), self.logger).get_challenge_info().encode())
 
     def deploy(self, challenge_index):
         if self.current_deploy:
@@ -31,8 +40,8 @@ class Client:
             if r.decode().strip().lower() == 'n':
                 send_message(self.conn, b'Ok, not replacing it\n\n')
                 return
-            
-        self.current_deploy = Contract(int(challenge_index))
+
+        self.current_deploy = Contract(int(challenge_index), self.logger)
         self.current_deploy.deploy()
         send_message(self.conn, b'\nChallenge deployed !\n\n')
         send_message(self.conn, self.current_deploy.get_challenge_info().encode())
@@ -42,11 +51,18 @@ class Client:
             send_message(self.conn, b'\nYou need to deploy a challenge first\n\n')
             return
         send_message(self.conn, b'\nValidating...\n\n')
-        result = self.current_deploy.validate()
-        send_message(self.conn, result.encode())
-
+        result, msg = self.current_deploy.validate()
+        send_message(self.conn, msg.encode())
+        # if result == True:
+        #     del self.current_deploy
+        #     self.current_deploy = None
 
     def help(self):
+        send_message(self.conn, b"""
+To get started, grabbed some ether using the `[3] Faucet`.
+Then, deploy the contract of your choice using the `[2] Deploy`.
+Once you think the objective has been validated, use the `[4] Validate`
+\n""")
         pass
 
     def process_action(self, action, params=None):

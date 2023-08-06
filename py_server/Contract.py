@@ -1,10 +1,12 @@
 from web3 import Web3
 from colorama import *
 from py_server.ChallengesConfig import ChallengesConfig
-from py_server.utils_strings import DIFFICULTY
+from py_server.utils_strings import DIFFICULTY, DIFFICULTY_COLORLESS
+from py_server.utils import *
 from dotenv import load_dotenv
 from os import getenv
 import sys
+import logging
 load_dotenv()
 
 WEB3_PRIVATE_KEY=getenv("WEB3_PRIVATE_KEY")
@@ -13,7 +15,8 @@ WEB3_RPC_URL=getenv("WEB3_RPC_URL")
 
 class Contract:
 
-    def __init__(self, challenge_index):
+    def __init__(self, challenge_index: int, logger: logging.Logger):
+        self.logger = logger
         self.challenge_config = ChallengesConfig.get_instance().config[challenge_index].copy()
         self.web3 = Web3(Web3.HTTPProvider(WEB3_RPC_URL))
         self.contract_address = None
@@ -29,7 +32,7 @@ class Contract:
             self.bin = open(bin_path, 'r').read()
             self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bin)
             Chain_id = self.web3.eth.chain_id
-            print("arguments", self.challenge_config['arguments'])
+            self.logger.debug("arguments", self.challenge_config['arguments'])
             construct_txn = self.contract.constructor(*self.challenge_config['arguments']).build_transaction({
                 'from': WEB3_PUBLIC_KEY,
                 'gasPrice': self.web3.eth.gas_price,
@@ -40,15 +43,22 @@ class Contract:
             tx_hash = self.web3.eth.send_raw_transaction(signed.rawTransaction)
             tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
             self.contract_address = tx_receipt.contractAddress
-            print(tx_receipt)
+            self.logger.debug(tx_receipt)
+            self.logger.info("deployed challenge %s at %s", self.challenge_config['name'], self.contract_address)
+
+    def get_difficulty_colorless(self):
+        return DIFFICULTY_COLORLESS[self.challenge_config['difficulty_level']]
+
+    def get_printable_difficulty(self):
+        return DIFFICULTY[self.challenge_config['difficulty_level']]
 
     def get_challenge_info(self):
-        res = f"{self.challenge_config['description']}\nDifficulty: {DIFFICULTY[self.challenge_config['difficulty_level']]}\n\n"
-        if self.contract_address:
-            res += f"Contract address: {self.contract_address}\n\n"
+        res = f"{self.challenge_config['description']}\nDifficulty: {self.get_printable_difficulty()}\n\n"
+        # if self.contract_address:
+        #     res += f"Contract address: {self.contract_address}\n\n"
         return res
 
-    def validate(self):
+    def validate(self) -> (bool, str):
         current_path = sys.path # backup current path
         # change path to challenge directory
         sys.path.append(self.challenge_config['path'])
@@ -56,5 +66,7 @@ class Contract:
         validated = check(self.web3, self.abi, self.contract_address)
         sys.path = current_path
         if validated:
-            return f"{Back.GREEN}{Style.BRIGHT}SUCCESS{Style.RESET_ALL} Challenge {self.challenge_config['name']} completed successfully\n There is your flag: {self.challenge_config['flag']}\n\n"
-        return f"{Back.RED}{Style.BRIGHT}FAIL{Style.RESET_ALL} Challenge {self.challenge_config['name']} solved failed\n\n"
+            self.logger.info("validation of challenge %s successfull", self.challenge_config['name'])
+            return (True, f"{Back.GREEN}{Style.BRIGHT}SUCCESS{Style.RESET_ALL} Challenge {self.challenge_config['name']} completed successfully\n\nThere is your flag: {self.challenge_config['flag']}\n\n")
+        self.logger.info("validation of challenge %s unsuccessfull", self.challenge_config['name'])
+        return (False, f"{Back.RED}{Style.BRIGHT}FAIL{Style.RESET_ALL} Challenge {self.challenge_config['name']} not solved yet\n\n")

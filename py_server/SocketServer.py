@@ -3,9 +3,10 @@ from uuid import uuid4
 from py_server.Client import Client
 from py_server.ChallengesConfig import ChallengesConfig
 from py_server.utils_strings import apt42_ascii
-from py_server.utils import receive_message, send_message
+from py_server.utils import receive_message, send_message, render_current_challenge
 from os import getenv
 from threading import Thread
+import logging
 
 SIZE_OF_RECEIVE = 128
 HOST = '0.0.0.0'
@@ -28,13 +29,14 @@ class SocketServer:
         if SocketServer.__instance != None:
             return SocketServer.__instance
         else:
+            self.logger = logging.getLogger('tcpserver')
             self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server_socket.bind((HOST, PORT))
             self.server_socket.listen(socket.SOMAXCONN)
             self.clients = []
             SocketServer.__instance = self
-            print(f"SocketServer initialized listening on {HOST}:{PORT}")
+            self.logger.info(f"SocketServer initialized and listening on {HOST}:{PORT}")
 
     def exit_client(self, conn, client):
         if conn:
@@ -58,8 +60,10 @@ class SocketServer:
                 count += 1
         return count
     
-    def handle_requests(self, conn, current_client):
+    def handle_requests(self, conn, current_client: Client):
         while True:
+            if current_client.current_deploy:
+                send_message(conn, render_current_challenge(current_client.current_deploy).encode())
             send_message(conn, self.challenges_config.help_menu.encode(), True)
             r = receive_message(conn, SIZE_OF_RECEIVE)
             if not r:
@@ -81,26 +85,28 @@ class SocketServer:
                     self.exit_client(conn, current_client)
                     break
                 if action == 'list':
+                    send_message(conn, b'\n')
                     send_message(conn, self.challenges_config.challenge_menu.encode())
-                    send_message(conn, "[".encode() + str(len(self.challenges_config.CHALLENGES)).encode() + "]".encode() + b" Return to main menu\n\n", True)
+                    send_message(conn, "\n[".encode() + str(len(self.challenges_config.CHALLENGES)).encode() + "]".encode() + b" Return to main menu\n\n", True)
                     r = receive_message(conn, SIZE_OF_RECEIVE)
                     if not r:
                         break
                     param_client = r.decode().strip()
                     if not param_client.isnumeric() or int(param_client) > len(self.challenges_config.CHALLENGES) or int(param_client) < 0:
-                        send_message(conn, param_client.encode() + b" index is not allowed\n")
+                        send_message(conn, param_client.encode() + b" index is not allowed\n\n")
                         continue
                     if int(param_client) == len(self.challenges_config.CHALLENGES):
                         continue
                 if action == 'deploy':
+                    send_message(conn, b'\n')
                     send_message(conn, self.challenges_config.challenge_menu.encode())
-                    send_message(conn, "[".encode() + str(len(self.challenges_config.CHALLENGES)).encode() + "]".encode() + b" Return to main menu\n", True)
+                    send_message(conn, "\n[".encode() + str(len(self.challenges_config.CHALLENGES)).encode() + "]".encode() + b" Return to main menu\n\n", True)
                     r = receive_message(conn, SIZE_OF_RECEIVE)
                     if not r:
                         break
                     param_client = r.decode().strip()
                     if not param_client.isnumeric() or int(param_client) > len(self.challenges_config.CHALLENGES) or int(param_client) < 0:
-                        send_message(conn, param_client.encode() + b" index is not allowed\n")
+                        send_message(conn, param_client.encode() + b" index is not allowed\n\n")
                         continue
                     if int(param_client) == len(self.challenges_config.CHALLENGES):
                         continue
@@ -113,13 +119,11 @@ class SocketServer:
 
                 current_client.process_action(action.lower(), param_client)
 
-
     def start_server(self):
         self.challenges_config = ChallengesConfig.get_instance()
         try:
             while True:
                 conn, addr = self.server_socket.accept()
-                print("Connected by", addr)
                 uuid = uuid4()
                 count_address = self.counts_address_clients(addr[0])
 
@@ -132,6 +136,7 @@ class SocketServer:
                     send_message(conn, b"An error occurred, please try again\n")
                     conn.close()
                     break
+
                 already_connected, _ = self.get_client_by_uuid(uuid)
                 if already_connected is None:
                     current_client = Client(conn, addr, uuid4())
@@ -145,5 +150,5 @@ class SocketServer:
                 thread.start()
 
         except Exception as e:
-            print(e)
+            self.logger.warning(e)
             self.exit_client(conn, current_client)

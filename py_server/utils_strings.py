@@ -28,6 +28,12 @@ apt42_ascii = '''
 ===============================================================================                
 '''
 
+DIFFICULTY_COLORLESS = [
+    f"Very Easy",
+    f"Easy",
+    f"Medium",
+    f"Hard"
+]
 
 DIFFICULTY = [
     f"{Back.BLUE}{Style.BRIGHT}Very Easy{Style.RESET_ALL}",
