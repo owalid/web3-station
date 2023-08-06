@@ -1,11 +1,14 @@
 cancunbeh:
   name: "Cancúnbeh"
   path: "challenges/Cancúnbeh/challenge.yaml"
+  visibility: 1
 
 panama_not_paname:
   name: "Panama not Paname"
   path: "challenges/Panama not Paname/challenge.yaml"
+  visibility: 1
 
 to_the_monaco:
   name: "To the Monaco"
   path: "challenges/To the Monaco/challenge.yaml"
+  visibility: 1

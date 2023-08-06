@@ -16,6 +16,7 @@ class ALLOWED_ACTIONS(BaseEnum):
     faucet='1'
     validate='2'
     help='3'
+    list='4'
 
 class CHALLENGES(BaseEnum):
     cancunbeh='0'

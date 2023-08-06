@@ -3,41 +3,45 @@ from py_server.Contract import Contract
 from py_server.Faucet import Faucet
 
 class Client:
-    def __init__(self, conn, address):
-        self.address = address
+    def __init__(self, conn, addr, uuid):
         self.conn = conn
+        self.address = addr
+        self.uuid = uuid 
         self.current_deploy = None
     
     def faucet(self, to_address):
         res = Faucet.get_instance().send_ether(to_address)
         if res == 0:
-            send_message(self.conn, b'Ether sent')
+            send_message(self.conn, b'Some juicy ethers was sent\n\n')
         elif res == -1:
-            send_message(self.conn, b'Your address is invalid')
+            send_message(self.conn, b'Your address is invalid\n\n')
         elif res == -2:
-            send_message(self.conn, b'You already have ether')
-        
-    
+            send_message(self.conn, b'You already have enough ethers\n\n')
+
+    def list(self, challenge_index):
+        send_message(self.conn, Contract(int(challenge_index)).get_challenge_info().encode())
+
     def deploy(self, challenge_index):
         if self.current_deploy:
-            send_message(self.conn, b'You already have a deployed challenge, it will replace the current one. Do you want to continue? [y/n]', True)
+            send_message(self.conn, b'You already have a deployed challenge, it will replace the current one. Do you want to continue? [y/n] ', True)
             r = receive_message(self.conn, 5)
             if not r or r.decode().strip().lower() not in ['y', 'n']:
-                send_message(self.conn, b'Invalid input')
+                send_message(self.conn, b'Invalid input\n\n')
                 return
             if r.decode().strip().lower() == 'n':
-                send_message(self.conn, b'Ok, not replacing it')
+                send_message(self.conn, b'Ok, not replacing it\n\n')
                 return
             
         self.current_deploy = Contract(int(challenge_index))
-        send_message(self.conn, b'Challenge deployed\n')
+        self.current_deploy.deploy()
+        send_message(self.conn, b'\nChallenge deployed !\n\n')
         send_message(self.conn, self.current_deploy.get_challenge_info().encode())
 
     def validate(self):
         if not self.current_deploy:
-            send_message(self.conn, b'You need to deploy a challenge first')
+            send_message(self.conn, b'\nYou need to deploy a challenge first\n\n')
             return
-        send_message(self.conn, b'Validating...\n')
+        send_message(self.conn, b'\nValidating...\n\n')
         result = self.current_deploy.validate()
         send_message(self.conn, result.encode())
 

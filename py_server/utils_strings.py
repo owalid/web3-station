@@ -1,3 +1,5 @@
+from colorama import *
+
 apt42_ascii = '''                                                            
   *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@           
 @@@  /@@@@@   @@@@@@@@ .@@@@@@@@@  @@           
@@ -25,3 +27,11 @@ apt42_ascii = '''
 
 ===============================================================================                
 '''
+
+
+DIFFICULTY = [
+    f"{Back.BLUE}{Style.BRIGHT}Very Easy{Style.RESET_ALL}",
+    f"{Back.GREEN}{Style.BRIGHT}Easy{Style.RESET_ALL}",
+    f"{Back.YELLOW}{Style.BRIGHT}Medium{Style.RESET_ALL}",
+    f"{Back.RED}{Style.BRIGHT}Hard{Style.RESET_ALL}"
+]

@@ -1,1 +1,4 @@
 web3
+colorama
+pyyaml
+python-dotenv

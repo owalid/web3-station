@@ -1,0 +1,24 @@
+name: "On s'Andorre"
+difficulty_level: 2
+description: |
+  Cancúnbeh
+
+  En ayant fait fortune grâce aux ventes d'actions APT42, vous entamez votre tour du monde des paradis fiscaux, votre VRAI chez vous.
+  Votre première étape: Cancún.
+  Au retour à votre hotel 5 étoiles après une journée à profiter de la plage, vous constatez la perte de la clé de votre chambre.
+  Heuresement un digicode est present, de plus, vous vous souvenez du code de celui-ci: 123456 !
+
+  Objectif: Ouvrir la porte afin de passer une nuit douillette.
+
+bytecode: ""
+arguments: []
+amount: 0
+files:
+  - bin: Door.bin
+    abi: Door.abi
+    sol: challenge.sol
+    # this visibility is not used for now but
+    # is supposed to indicate the .sol visibility
+    visibility: 1
+flag: APT42{mY_b3D_1s_fUlL_0f_c@5H}
+check: check.py
