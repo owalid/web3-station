@@ -3,6 +3,7 @@ import os
 from yaml.loader import SafeLoader
 import logging
 from sys import stdout
+from colorama import *
 
 logger = logging.getLogger('utils')
 
@@ -23,26 +24,53 @@ def receive_message(conn, buffer_size=1024):
             return None if not r else r
     return None if not r else r
 
+def send_error(conn, message, end=False):
+    conn.sendall(f"\n{Back.RED}{Style.BRIGHT}Error:{Style.RESET_ALL} {message} Please contact your administrator.\n\n".encode())
+    if end:
+        conn.sendall(b'> ')
+
 def send_message(conn, message, end=False):
+    if type(message) == str:
+        message = message.encode()
     conn.sendall(message)
     if end:
         conn.sendall(b'> ')
 
-def render_current_challenge(contract) -> str:
+import re
+
+def len_no_ansi(string):
+    return len(re.sub(
+        r'[\u001B\u009B][\[\]()#;?]*((([a-zA-Z\d]*(;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)|((\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-ntqry=><~]))', '', string))
+
+def render_unicode_box(message: str, hc = '') -> str:
+    '''
+    Draw a unicode box around the message
+
+            Parameters:
+                    message (str): the message to be put inside the box
+                    hc (str): heading char, placed b4 the unicode box
+
+            Returns:
+                    The message inside the box as a string
+    '''
+    s_message = message.split('\n')
+    longest_line = max([len_no_ansi(line) for line in s_message])
     tlc = '\u256D'
     trc = '\u256E'
     blc = '\u2570'
     brc = '\u256F'
     h = '\u2500'
     v = '\u2502'
-    line1 = f"Current challenge: {contract.challenge_config['name']}"
-    line2 = f"Difficulty: {contract.get_printable_difficulty()}"
-    line2len = len(f"Difficulty: {contract.get_difficulty_colorless()}")
-    line3 = f"Address: {contract.contract_address}"
-    maxlen = max([len(line1), line2len, len(line3)])
+    a = f"{hc}{tlc}{h * longest_line}{trc}\n"
+    for line in s_message:
+        a += f"{hc}{v}{line}{' ' * (longest_line - len_no_ansi(line))}{v}\n"
+    a += f"{hc}{blc}{h * longest_line}{brc}\n"
+    return a
 
-    return f" {tlc}{h * maxlen}{trc}\n {v}{line1}{' ' * (maxlen - len(line1))}{v}\n {v}{line2}{' ' * (maxlen - line2len)}{v}\n {v}{line3}{' ' * (maxlen - len(line3))}{v}\n {blc}{h * maxlen}{brc}\n\n"
-
+def render_current_challenge(contract) -> str:
+    return render_unicode_box(f"Current challenge: {contract.challenge_config['name']}\n"\
+                              f"Difficulty: {contract.get_printable_difficulty()}\n"
+                              f"Address: {contract.contract_address}", ' ') + '\n'
 
 def destroyLogger(client):
     del logging.Logger.manager.loggerDict[f'client:{client.address[0]}:{client.address[1]}:{client.uuid}']

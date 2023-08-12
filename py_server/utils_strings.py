@@ -1,6 +1,6 @@
 from colorama import *
 
-apt42_ascii = '''                                                            
+header = '''                                                            
   *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@           
 @@@  /@@@@@   @@@@@@@@ .@@@@@@@@@  @@           
 @@  @@@@@@@   @@@@@@@@ .@@@@@@@@@  @@           
@@ -36,8 +36,8 @@ DIFFICULTY_COLORLESS = [
 ]
 
 DIFFICULTY = [
-    f"{Back.BLUE}{Style.BRIGHT}Very Easy{Style.RESET_ALL}",
-    f"{Back.GREEN}{Style.BRIGHT}Easy{Style.RESET_ALL}",
-    f"{Back.YELLOW}{Style.BRIGHT}Medium{Style.RESET_ALL}",
-    f"{Back.RED}{Style.BRIGHT}Hard{Style.RESET_ALL}"
+    f"{Back.BLUE}{Style.BRIGHT}{DIFFICULTY_COLORLESS[0]}{Style.RESET_ALL}",
+    f"{Back.GREEN}{Style.BRIGHT}{DIFFICULTY_COLORLESS[1]}{Style.RESET_ALL}",
+    f"{Back.YELLOW}{Style.BRIGHT}{DIFFICULTY_COLORLESS[2]}{Style.RESET_ALL}",
+    f"{Back.RED}{Style.BRIGHT}{DIFFICULTY_COLORLESS[3]}{Style.RESET_ALL}"
 ]

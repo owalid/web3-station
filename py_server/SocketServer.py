@@ -2,7 +2,7 @@ import socket
 from uuid import uuid4
 from py_server.Client import Client
 from py_server.ChallengesConfig import ChallengesConfig
-from py_server.utils_strings import apt42_ascii
+from py_server.utils_strings import header
 from py_server.utils import receive_message, send_message, render_current_challenge
 from os import getenv
 from threading import Thread
@@ -144,7 +144,7 @@ class SocketServer:
                 else:
                     send_message(conn, b"Already connected\n")
                     conn.close()
-                send_message(conn, apt42_ascii.encode())
+                send_message(conn, header.encode())
                 # start thread for client
                 thread = Thread(target=self.handle_requests, args=(conn, current_client))
                 thread.start()

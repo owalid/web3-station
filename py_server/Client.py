@@ -1,4 +1,4 @@
-from py_server.utils import receive_message, send_message
+from py_server.utils import receive_message, send_message, send_error
 from py_server.Contract import Contract
 from py_server.Faucet import Faucet
 from py_server.utils import getClientLogger, destroyLogger
@@ -41,8 +41,14 @@ class Client:
                 send_message(self.conn, b'Ok, not replacing it\n\n')
                 return
 
-        self.current_deploy = Contract(int(challenge_index), self.logger)
-        self.current_deploy.deploy()
+        try:
+            self.current_deploy = Contract(int(challenge_index), self.logger)
+            self.current_deploy.deploy()
+        except Exception as e:
+            self.logger.critical(e)
+            self.current_deploy = None
+            send_error(self.conn, 'An error has occured while deploying the contract.')
+            return
         send_message(self.conn, b'\nChallenge deployed !\n\n')
         send_message(self.conn, self.current_deploy.get_challenge_info().encode())
 
@@ -51,7 +57,13 @@ class Client:
             send_message(self.conn, b'\nYou need to deploy a challenge first\n\n')
             return
         send_message(self.conn, b'\nValidating...\n\n')
-        result, msg = self.current_deploy.validate()
+        try:
+            result, msg = self.current_deploy.validate()
+        except Exception as e:
+            self.logger.critical(e)
+            self.current_deploy = None
+            send_error(self.conn, 'An error has occured while validating the challenge.')
+            return
         send_message(self.conn, msg.encode())
         if result == True:
             del self.current_deploy
