@@ -1,10 +1,11 @@
+from socket import socket
 from py_server.utils import receive_message, send_message, send_error
 from py_server.Contract import Contract
 from py_server.Faucet import Faucet
 from py_server.utils import getClientLogger, destroyLogger
 
 class Client:
-    def __init__(self, conn, addr, uuid):
+    def __init__(self, conn: socket, addr, uuid):
         self.conn = conn
         self.address = addr
         self.uuid = uuid 
@@ -28,7 +29,7 @@ class Client:
 
     def list(self, challenge_index):
         send_message(self.conn, b"\n")
-        send_message(self.conn, Contract(int(challenge_index), self.logger).get_challenge_info().encode())
+        send_message(self.conn, Contract(int(challenge_index), self.conn, self.logger).get_challenge_info().encode())
 
     def deploy(self, challenge_index):
         if self.current_deploy:
@@ -42,8 +43,9 @@ class Client:
                 return
 
         try:
-            self.current_deploy = Contract(int(challenge_index), self.logger)
-            self.current_deploy.deploy()
+            self.current_deploy = Contract(int(challenge_index), self.conn, self.logger)
+            if self.current_deploy.challenge_config['deployable'] == True:
+                self.current_deploy.deploy()
         except Exception as e:
             self.logger.critical(e)
             self.current_deploy = None
@@ -58,7 +60,7 @@ class Client:
             return
         send_message(self.conn, b'\nValidating...\n\n')
         try:
-            result, msg = self.current_deploy.validate()
+            result, msg = self.current_deploy.validate(self.conn)
         except Exception as e:
             self.logger.critical(e)
             self.current_deploy = None

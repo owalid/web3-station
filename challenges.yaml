@@ -12,3 +12,8 @@ to_the_monaco:
   name: "To the Monaco"
   path: "challenges/To the Monaco/challenge.yaml"
   visibility: 1
+
+voleur_du_vanuatu:
+  name: "Voleur du Vanuatu"
+  path: "challenges/Voleur du Vanuatu/challenge.yaml"
+  visibility: 0

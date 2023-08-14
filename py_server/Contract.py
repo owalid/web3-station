@@ -1,3 +1,4 @@
+from socket import socket
 from web3 import Web3
 from colorama import *
 from py_server.ChallengesConfig import ChallengesConfig
@@ -16,7 +17,8 @@ WEB3_RPC_URL=getenv("WEB3_RPC_URL")
 
 class Contract:
 
-    def __init__(self, challenge_index: int, logger: logging.Logger):
+    def __init__(self, challenge_index: int, conn: socket, logger: logging.Logger):
+        self.conn = conn
         self.logger = logger
         self.challenge_config = ChallengesConfig.get_instance().config[challenge_index].copy()
         self.web3 = Web3(Web3.HTTPProvider(WEB3_RPC_URL))
@@ -59,17 +61,17 @@ class Contract:
         #     res += f"Contract address: {self.contract_address}\n\n"
         return res
 
-    def validate(self) -> (bool, str):
+    def validate(self, conn) -> (bool, str):
         # current_path = sys.path # backup current path
         # change path to challenge directory
         sys.path.append(self.challenge_config['path'])
         import check as ContractChecker
         importlib.reload(ContractChecker)
-        validated = ContractChecker.check(self.web3, self.abi, self.contract_address)
+        validated = ContractChecker.check(self.web3, self.abi, self.contract_address, self.conn, self.logger)
         # sys.path = current_path
         sys.path.remove(self.challenge_config['path'])
         if validated:
-            self.logger.info("validation of challenge %s successfull", self.challenge_config['name'])
+            self.logger.info("validation of challenge %s at addr %s successfull", self.challenge_config['name'], self.contract_address)
             return (True, f"{Back.GREEN}{Style.BRIGHT}SUCCESS{Style.RESET_ALL} Challenge {self.challenge_config['name']} completed successfully\n\nThere is your flag: {self.challenge_config['flag']}\n\n")
-        self.logger.info("validation of challenge %s unsuccessfull", self.challenge_config['name'])
+        self.logger.info("validation of challenge %s at addr %s unsuccessfull", self.challenge_config['name'], self.contract_address)
         return (False, f"{Back.RED}{Style.BRIGHT}FAIL{Style.RESET_ALL} Challenge {self.challenge_config['name']} not solved yet\n\n")
