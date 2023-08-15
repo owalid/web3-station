@@ -4,11 +4,15 @@ from py_server.Client import Client
 from py_server.ChallengesConfig import ChallengesConfig
 from py_server.utils_strings import header
 from py_server.utils import receive_message, send_message, render_current_challenge
+from py_server.Admin import Admin
 from os import getenv
 from threading import Thread
 import logging
+from typing import List
+from py_server.Client import Client
 
 SIZE_OF_RECEIVE = 128
+RECEIVE_TIMOUT = 180
 HOST = '0.0.0.0'
 SECRET_KEY = getenv('SECRET_KEY')
 PORT = 5555
@@ -34,7 +38,7 @@ class SocketServer:
             self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server_socket.bind((HOST, PORT))
             self.server_socket.listen(socket.SOMAXCONN)
-            self.clients = []
+            self.clients: List[Client] = []
             SocketServer.__instance = self
             self.logger.info(f"SocketServer initialized and listening on {HOST}:{PORT}")
 
@@ -63,7 +67,7 @@ class SocketServer:
     def handle_requests(self, conn, current_client: Client):
         while True:
             if current_client.current_deploy:
-                send_message(conn, render_current_challenge(current_client.current_deploy).encode())
+                send_message(conn, f"{render_current_challenge(current_client.current_deploy)}\n".encode())
             send_message(conn, self.challenges_config.help_menu.encode(), True)
             r = receive_message(conn, SIZE_OF_RECEIVE)
             if not r:
@@ -71,7 +75,7 @@ class SocketServer:
             action_index = r.decode().strip()
 
             if action_index == SECRET_KEY:
-                ChallengesConfig.get_instance().reload_config()
+                Admin(current_client).interactive()
                 continue
 
             if not action_index.isnumeric() or int(action_index) >= len(self.challenges_config.ACTIONS) or int(action_index) < 0:
@@ -119,6 +123,8 @@ class SocketServer:
 
                 current_client.process_action(action.lower(), param_client)
 
+        self.exit_client(conn, current_client)
+
     def start_server(self):
         self.challenges_config = ChallengesConfig.get_instance()
         try:
@@ -139,6 +145,7 @@ class SocketServer:
 
                 already_connected, _ = self.get_client_by_uuid(uuid)
                 if already_connected is None:
+                    conn.settimeout(RECEIVE_TIMOUT)
                     current_client = Client(conn, addr, uuid4())
                     self.clients.append(current_client)
                 else:

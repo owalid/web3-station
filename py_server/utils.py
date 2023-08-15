@@ -1,4 +1,5 @@
 import yaml
+from socket import socket
 import os
 from yaml.loader import SafeLoader
 import logging
@@ -7,7 +8,7 @@ from colorama import *
 
 logger = logging.getLogger('utils')
 
-def receive_message(conn, buffer_size=1024):
+def receive_message(conn: socket, buffer_size=1024):
     i = 0
     r = b''
     while True:
@@ -64,7 +65,7 @@ def render_unicode_box(message: str, hc = '') -> str:
     a = f"{hc}{tlc}{h * longest_line}{trc}\n"
     for line in s_message:
         a += f"{hc}{v}{line}{' ' * (longest_line - len_no_ansi(line))}{v}\n"
-    a += f"{hc}{blc}{h * longest_line}{brc}\n"
+    a += f"{hc}{blc}{h * longest_line}{brc}"
     return a
 
 def render_current_challenge(contract) -> str:
