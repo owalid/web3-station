@@ -4,12 +4,11 @@ description: |
  
   Offshorisation Lichensteinienne
 
-  En ayant fait fortune grâce aux ventes d'actions APT42, vous entamez votre tour du monde des paradis fiscaux, votre VRAI chez vous.
-  Votre première étape: Cancún.
-  Au retour à votre hotel 5 étoiles après une journée à profiter de la plage, vous constatez la perte de la clé de votre chambre.
-  Heuresement un digicode est present, de plus, vous vous souvenez du code de celui-ci: 123456 !
+  Vous venez de dépenser tout votre argent dans des futilités et des cours de surf. Vous êtes maintenant à sec.
+  Cependant, vous vous souvenez avoir ouvert un compte bancaire dans un paradis fiscal situé au Liechtenstein.
+  Petit problème, vous réalisez que vous avez oublié votre mot de passe de compte. Vous avez un plan. Vous vous souvenez qu'un de vos amis travaille dans cette banque. Vous allez vous faire passer pour lui et récupérer votre argent.
 
-  Objectif: Ouvrir la porte afin de passer une nuit douillette.
+  Objectif: Récupérer votre argent en vous faisant passer pour un employé de la banque pour pouvoir continuer à vivre la vie de rêve sous les cocotiers.
 
 bytecode: ""
 arguments: []
@@ -21,5 +20,5 @@ files:
     # this visibility is not used for now but
     # is supposed to indicate the .sol visibility
     visibility: 1
-flag: APT42{mY_b3D_1s_fUlL_0f_c@5H}
+flag: APT42{M4cr0n_r3Nd_l4rG3n7!!!}
 check: check.py
