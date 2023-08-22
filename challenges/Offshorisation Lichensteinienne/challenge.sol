@@ -21,10 +21,15 @@ contract OffShoreAccount {
     address public offshoreAddress;
     bytes16 public key;
     bool private unlocked = false;
+    bool private moneySent = false;
 
     constructor() payable {
         offshoreAddress = msg.sender;
         key = bytes16(uint128(uint256(keccak256(abi.encodePacked(uint256(uint160(address(msg.sender)))))) ^ 42) ^ uint128(0x6170743432));
+    }
+
+    function isSolved() public view returns (bool) {
+        return moneySent && unlocked;
     }
 
     function unlock(bytes16 _key) public {
@@ -33,10 +38,12 @@ contract OffShoreAccount {
     }
 
     function transfer(address payable _toAddr) public {
+        require(moneySent == false, "Money already sent");
         require(unlocked, "The offshore bank is locked");
         require(tx.origin == address(this), "Only the offshore bank can transfer funds");
 
         (bool sent, ) = _toAddr.call{value: 1 ether}("");
+        moneySent = sent;
         require(sent, "Failed to send Ether");
     }
 }
