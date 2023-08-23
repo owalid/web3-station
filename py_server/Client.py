@@ -19,7 +19,12 @@ class Client:
         destroyLogger(self)
 
     def faucet(self, to_address):
-        res = Faucet.get_instance().send_ether(to_address, self.logger)
+        try:
+            res = Faucet.get_instance().send_ether(to_address, self.logger)
+        except Exception as e:
+            self.logger.critical(e)
+            send_error(self.conn, 'An error has occured while providing you with ethers.')
+            return
         if res == 0:
             send_message(self.conn, b'Some juicy ethers was sent\n\n')
         elif res == -1:
