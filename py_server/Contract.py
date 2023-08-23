@@ -41,6 +41,7 @@ class Contract:
                 'gasPrice': self.web3.eth.gas_price,
                 'chainId': Chain_id,
                 'nonce': self.web3.eth.get_transaction_count(WEB3_PUBLIC_KEY),
+                'value': self.challenge_config['amount']
             })
             signed = self.web3.eth.account.sign_transaction(construct_txn, private_key=WEB3_PRIVATE_KEY)
             tx_hash = self.web3.eth.send_raw_transaction(signed.rawTransaction)
