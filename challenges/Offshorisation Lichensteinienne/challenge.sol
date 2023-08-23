@@ -37,7 +37,7 @@ contract OffShoreAccount {
     function transfer(address payable _toAddr) public {
         require(moneySent == false, "Money already sent");
         require(unlocked, "The offshore bank is locked");
-        require(tx.origin != msg.sender, "Only the offshore bank can transfer funds");
+        require(tx.origin != msg.sender, "Only bank employees or the account owner can perform this action.");
 
         (bool sent, ) = _toAddr.call{value: 1 ether}("");
         moneySent = sent;
