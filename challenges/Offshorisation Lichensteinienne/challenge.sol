@@ -18,14 +18,11 @@
 pragma solidity ^0.8.0;
 
 contract OffShoreAccount {
-    address public offshoreAddress;
-    bytes16 public key;
     bool private unlocked = false;
     bool private moneySent = false;
 
     constructor() payable {
-        offshoreAddress = msg.sender;
-        key = bytes16(uint128(uint256(keccak256(abi.encodePacked(uint256(uint160(address(msg.sender)))))) ^ 42) ^ uint128(0x6170743432));
+      require(msg.value == 1 ether);
     }
 
     function isSolved() public view returns (bool) {
@@ -33,14 +30,14 @@ contract OffShoreAccount {
     }
 
     function unlock(bytes16 _key) public {
-        require(key == _key, "Invalid key");
+        require(bytes16(uint128(uint256(keccak256(abi.encodePacked(uint256(uint160(address(tx.origin)))))) ^ 42) ^ uint128(0x6170743432)) == _key, "Invalid key");
         unlocked = true;
     }
 
     function transfer(address payable _toAddr) public {
         require(moneySent == false, "Money already sent");
         require(unlocked, "The offshore bank is locked");
-        require(tx.origin == address(this), "Only the offshore bank can transfer funds");
+        require(tx.origin != msg.sender, "Only the offshore bank can transfer funds");
 
         (bool sent, ) = _toAddr.call{value: 1 ether}("");
         moneySent = sent;
