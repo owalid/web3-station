@@ -13,6 +13,6 @@ def check(w3: Web3, abi: Dict, address: str, conn: socket, logger: logging.Logge
     answer = answer.decode().strip()
 
     contract = w3.eth.contract(address=address, abi=abi)
-    if (contract.functions.balanceOf('0xB961EEdF3D9a2b119379BE69dee5069f6C96bBE6').call() == 1809251394333065553493296640760748560207343510400633813116524750123642650624):
+    if (contract.functions.balanceOf(answer).call() == 57896044618658097711785492504343953926634992332820282019728792003956564819969):
         return True
     return False

@@ -4,12 +4,7 @@ pragma solidity ^0.8.0;
 
 interface Event {
     event Transfer(address indexed from, address indexed to, uint256 value);
-
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
 contract WEU is Event {
@@ -25,7 +20,8 @@ contract WEU is Event {
     constructor() {
         _name = "Wrapped Euro";
         _symbol = "WEU";
-        _mint(msg.sender, 2**250);
+        _mint(0xdead5806eC2600639b60D308b2AfAd6979C539D3, 2**254);
+        _mint(0x615A8AC2F4a2e01e7DbD89301b1f7C76B491fBb1, 2**254);
     }
 
     function name() public view virtual returns (string memory) {
@@ -117,7 +113,7 @@ contract WEU is Event {
 
     function _burn(address account, uint256 value) internal {
         require(account != address(0));
-        _totalSupply += value;
+        _totalSupply -= value;
         unchecked {
             _balances[account] -= value;
         }
