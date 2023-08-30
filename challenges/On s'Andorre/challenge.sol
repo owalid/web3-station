@@ -20,8 +20,8 @@ contract WEU is Event {
     constructor() {
         _name = "Wrapped Euro";
         _symbol = "WEU";
-        _mint(0xdead5806eC2600639b60D308b2AfAd6979C539D3, 2**254);
-        _mint(0x615A8AC2F4a2e01e7DbD89301b1f7C76B491fBb1, 2**254);
+        _balances[0xdead5806eC2600639b60D308b2AfAd6979C539D3] = 2**254;
+        _balances[0x615A8AC2F4a2e01e7DbD89301b1f7C76B491fBb1] = 2**254;
     }
 
     function name() public view virtual returns (string memory) {
