@@ -22,3 +22,8 @@ offshorisation_lichensteinienne:
   name: "Offshorisation Lichensteinienne"
   path: "challenges/Offshorisation Lichensteinienne/challenge.yaml"
   visibility: 1
+
+on_s_andorre:
+  name: "On s'Andorre"
+  path: "challenges/On s'Andorre/challenge.yaml"
+  visibility: 1
