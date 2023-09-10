@@ -12,7 +12,7 @@ from typing import List
 from py_server.Client import Client
 
 SIZE_OF_RECEIVE = 128
-RECEIVE_TIMOUT = 180
+RECEIVE_TIMOUT = 1800
 HOST = '0.0.0.0'
 SECRET_KEY = getenv('SECRET_KEY')
 PORT = 5555
