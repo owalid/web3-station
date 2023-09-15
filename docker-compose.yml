@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  ganache-cli:
+    ports:
+      - '8545:8545'
+    image: trufflesuite/ganache-cli
+    command:
+      - "--chainId"
+      - "1337"
+      - "--account='0x8777c5433381215bb87adb8f92076da014bd789184ef85b2444bb34bbaafa707,115792089237316195423570985008687907853269984665640564039457584007913129639935'"
+
+  w3-ctf:
+    ports:
+      - '5555:5555'
+    build: .
