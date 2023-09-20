@@ -18,7 +18,10 @@ class Client:
         self.logger.info(f"client disconnected %s:%d", self.address[0], self.address[1])
         destroyLogger(self)
 
-    def faucet(self, to_address):
+    def faucet(self, to_address=''):
+        if to_address == '':
+            send_message(self.conn, b'You need to provide an address\n\n')
+            return
         try:
             res = Faucet.get_instance().send_ether(to_address, self.logger)
         except Exception as e:
@@ -36,7 +39,7 @@ class Client:
         send_message(self.conn, b"\n")
         send_message(self.conn, Contract(int(challenge_index), self.conn, self.logger).get_challenge_info().encode())
 
-    def deploy(self, challenge_index):
+    def deploy(self, challenge_index=''):
         if self.current_deploy:
             send_message(self.conn, b'You already have a deployed challenge, it will replace the current one. Do you want to continue? [y/n] ', True)
             r = receive_message(self.conn, 5)
