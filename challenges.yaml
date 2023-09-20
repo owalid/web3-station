@@ -1,3 +1,8 @@
+welcome:
+  name: "Welcome"
+  path: "challenges/Welcome/challenge.yaml"
+  visibility: 1
+
 cancunbeh:
   name: "Cancúnbeh"
   path: "challenges/Cancúnbeh/challenge.yaml"

@@ -1,0 +1,26 @@
+name: "Welcome"
+difficulty_level: 0
+deployable: 1
+description: |
+  Welcome
+
+  Bienvenue dans ce workshop qui va vous faire voyager à travers le monde.
+  Vous allez découvrir des paysages magnifiques, des cultures différentes et des gens accueillants.
+  Mais attention, il y a des pièges et des dangers partout.
+  Vous allez devoir faire preuve de ruse et de perspicacité pour vous en sortir.
+  
+  Bonne chance !
+
+  Objectif: Demande ton flag par toi-même on ne va pas te le donner quand même !
+
+bytecode: "0x608060405260008060006101000a81548160ff02191690831515021790555034801561002a57600080fd5b5060ee806100396000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c8063107c7b4e146037578063a18f8b9114603f575b600080fd5b603d6059565b005b60456075565b604051605091906093565b60405180910390f35b60016000806101000a81548160ff021916908315150217905550565b60008054906101000a900460ff1681565b608d8160ac565b82525050565b600060208201905060a660008301846086565b92915050565b6000811515905091905056fea2646970667358221220e82bb06dbeaac440a3927b46877e64f3bf00215c222b015b9ab2ebfe421f43f164736f6c63430008000033"
+arguments: []
+amount: 0
+files:
+  - bin: Welcome.bin
+    abi: Welcome.abi
+    sol: challenge.sol
+    visibility: 1
+
+flag: APT42{4H_sH1T_H3r3_w3_g0_a641N}
+check: check.py
