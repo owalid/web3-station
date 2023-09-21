@@ -39,7 +39,7 @@ class Client:
         send_message(self.conn, b"\n")
         send_message(self.conn, Contract(int(challenge_index), self.conn, self.logger).get_challenge_info().encode())
 
-    def deploy(self, challenge_index=''):
+    def deploy(self, challenge_index):
         if self.current_deploy:
             send_message(self.conn, b'You already have a deployed challenge, it will replace the current one. Do you want to continue? [y/n] ', True)
             r = receive_message(self.conn, 5)
