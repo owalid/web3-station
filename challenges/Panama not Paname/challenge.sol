@@ -41,3 +41,9 @@ contract SurfSequence {
         tookWave = true;
     }
 }
+
+// ps: pour ce challenge tu aura besoin d'utiliser d'autres logiciels que remix, tu peux pour cela utiliser web3py, exemple d'utilisation:
+// $ pip3 install web3
+// >>> from web3 import Web3
+// >>> w3 = Web3(Web3.HTTPProvider('http://localhost:8545'))
+// >>> w3.eth.get_code('0x6B7B103B0E86705358f403bA220461696569Ea76')
