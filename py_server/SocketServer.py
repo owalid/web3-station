@@ -12,7 +12,7 @@ from typing import List
 from py_server.Client import Client
 
 SIZE_OF_RECEIVE = 128
-RECEIVE_TIMOUT = 1800
+RECEIVE_TIMOUT = 3600
 HOST = '0.0.0.0'
 SECRET_KEY = getenv('SECRET_KEY')
 PORT = 5555
@@ -116,7 +116,7 @@ class SocketServer:
                         continue
                 if action == 'faucet':
                     send_message(conn, b'Send me your address, I will send you some ethers\n', True)
-                    r = receive_message(conn, 30)
+                    r = receive_message(conn, SIZE_OF_RECEIVE)
                     if not r:
                         break
                     param_client = r.decode().strip()
