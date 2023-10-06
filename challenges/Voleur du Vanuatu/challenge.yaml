@@ -14,7 +14,7 @@ description: |
 
   Le flag est la concaténation de toutes les adresses malveillantes qui ont possédé l'argent (dans leur ordre de possession).
 
-  Exemple: Si l'argent était stocké sur le faucet dont l'adresse est 0xbA8DCA496adc3Dc6af79bDA27e547024b11465ce, puis a transité par 0xcB65F1a15C7B1b08C53DA70CD028c07348FC3E42, puis par 0xDEf031A6c0D14FcE562f1db8b890Ecb691b03c9A, puis a terminé sur 0x62780FD6Fd85B2029618a98299d142e3CA26FcbA, il faut donner comme réponse 0xcB65F1a15C7B1b08C53DA70CD028c07348FC3E42xDEf031A6c0D14FcE562f1db8b890Ecb691b03c9A0x62780FD6Fd85B2029618a98299d142e3CA26FcbA.
+  Exemple: Si l'argent était stocké sur le faucet dont l'adresse est 0xbA8DCA496adc3Dc6af79bDA27e547024b11465ce, puis a transité par 0xcB65F1a15C7B1b08C53DA70CD028c07348FC3E42, puis par 0xDEf031A6c0D14FcE562f1db8b890Ecb691b03c9A, puis a terminé sur 0x62780FD6Fd85B2029618a98299d142e3CA26FcbA, il faut donner comme réponse 0xcB65F1a15C7B1b08C53DA70CD028c07348FC3E420xDEf031A6c0D14FcE562f1db8b890Ecb691b03c9A0x62780FD6Fd85B2029618a98299d142e3CA26FcbA.
 
   ps: Dans l'exemple ci dessus, 0x62780FD6Fd85B2029618a98299d142e3CA26FcbA possède actuellement les 90% de l'argent.
 
