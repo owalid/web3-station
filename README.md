@@ -15,7 +15,7 @@ WARNING: This private key is publicly known, change it
 
 Run a docker container to host a private node using anvil
 ```
-docker run -d -p 8545:8545 ghcr.io/foundry-rs/foundry:latest
+docker run -d -p 8545:8545 ghcr.io/foundry-rs/foundry:latest anvil
 ```
 
 Run the software
