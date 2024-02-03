@@ -1,15 +1,18 @@
 version: '3.3'
 services:
-  ganache-cli:
+
+  anvil:
     ports:
       - '8545:8545'
-    image: trufflesuite/ganache-cli
-    command:
-      - "--chainId"
-      - "1337"
-      - "--account='0x8777c5433381215bb87adb8f92076da014bd789184ef85b2444bb34bbaafa707,115792089237316195423570985008687907853269984665640564039457584007913129639935'"
+    image: ghcr.io/foundry-rs/foundry:latest
+    volumes:
+      - ./genesis.json:/app/genesis.json
+    entrypoint: anvil
+    command: --init /app/genesis.json --accounts 0 --host 0.0.0.0
 
   w3-ctf:
+    volumes:
+      - ./.env:/app/.env
     ports:
       - '5555:5555'
     build: .
