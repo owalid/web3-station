@@ -2,6 +2,8 @@
 
 ## Run
 
+ps: you can run the `docker-compose` file to not bother with the following setup.
+
 Create a `.env` with the following content at the root of the repository
 ```env
 WEB3_RPC_URL=http://localhost:8545
@@ -11,9 +13,9 @@ SECRET_KEY=bonjour
 ```
 WARNING: This private key is publicly known, change it
 
-Run a docker container with ganache-cli
+Run a docker container to host a private node using anvil
 ```
-docker run -d -p 8545:8545 trufflesuite/ganache-cli --chainId 1337 --account="$WEB3_PRIVATE_KEY,115792089237316195423570985008687907853269984665640564039457584007913129639935000000000000000000"
+docker run -d -p 8545:8545 ghcr.io/foundry-rs/foundry:latest
 ```
 
 Run the software
