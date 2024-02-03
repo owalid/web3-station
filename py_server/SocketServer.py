@@ -101,6 +101,19 @@ class SocketServer:
                         continue
                     if int(param_client) == len(self.challenges_config.CHALLENGES):
                         continue
+                if action == 'source':
+                    send_message(conn, b'\n')
+                    send_message(conn, self.challenges_config.challenge_menu.encode())
+                    send_message(conn, "\n[".encode() + str(len(self.challenges_config.CHALLENGES)).encode() + "]".encode() + b" Return to main menu\n\n", True)
+                    r = receive_message(conn, SIZE_OF_RECEIVE)
+                    if not r:
+                        break
+                    param_client = r.decode().strip()
+                    if not param_client.isnumeric() or int(param_client) > len(self.challenges_config.CHALLENGES) or int(param_client) < 0:
+                        send_message(conn, param_client.encode() + b" index is not allowed\n\n")
+                        continue
+                    if int(param_client) == len(self.challenges_config.CHALLENGES):
+                        continue
                 if action == 'deploy':
                     send_message(conn, b'\n')
                     send_message(conn, self.challenges_config.challenge_menu.encode())

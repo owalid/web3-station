@@ -62,6 +62,16 @@ class Contract:
         #     res += f"Contract address: {self.contract_address}\n\n"
         return res
 
+    def get_challenge_codes(self):
+        res = ""
+        for file in self.challenge_config['files']:
+            res += file['sol']
+            res += '\n```\n'
+            res += open(f"{self.challenge_config['path']}/{file['sol']}").read()
+            res += '```\n'
+        res += '\n'
+        return res
+
     def validate(self, conn) -> (bool, str):
         # current_path = sys.path # backup current path
         # change path to challenge directory

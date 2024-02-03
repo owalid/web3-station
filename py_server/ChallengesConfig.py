@@ -25,7 +25,7 @@ class ChallengesConfig:
     def set_config(self, config):
         config = sorted(config, key=lambda x: x['difficulty_level'])
         self.config = config
-        self.ACTIONS = ['Help', 'List', 'Deploy', 'Faucet', 'Validate', 'Exit']
+        self.ACTIONS = ['Help', 'List', 'Source', 'Deploy', 'Faucet', 'Validate', 'Exit']
         self.CHALLENGES = [f"{conf['name']: <35}\t{DIFFICULTY[conf['difficulty_level']]: >5}" for conf in self.config if conf["visibility"] == 1]
         self.help_menu = "Actions:\n" + "\n".join([f"[{i}] {a}" for i, a in enumerate(self.ACTIONS)]) + "\n\n"
         self.challenge_menu = "Challenge available:\n\n" + "\n".join([f"[{i}] {a}" for i, a in enumerate(self.CHALLENGES)]) + "\n"
