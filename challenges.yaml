@@ -32,3 +32,8 @@ on_s_andorre:
   name: "On s'Andorre"
   path: "challenges/On s'Andorre/challenge.yaml"
   visibility: 1
+
+elections:
+  name: "elections"
+  path: "challenges/Elections/challenge.yaml"
+  visibility: 1

@@ -1,0 +1,25 @@
+name: "Elections"
+difficulty_level: 3
+deployable: 1
+description: |
+  Elections
+
+  Après toutes ces péripéties de vacanciers, Othmane et Arthur envisagent un plan à plus long terme: concourir à la présidentielle de 2027.
+  Pour cela, ils  veulent tout d'abord révolutioner le système de vote en le décentralisant. Ils vous propose cela sous la forme d'un smart
+  contract "inviolable", prouvez leur que la sécurité du smart contract laisse à désirer.
+
+  ps: ce challenge est à l'origine un truc dev par Arthur.
+
+  Objectif : Ajouter 0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa à la liste des votants.
+
+arguments:
+  - ["0x3c8143b6288B0d206978cE29A76070e057D4Ee98","0x8C4C8Aa1b455207B8149e348836503a00013ebb2","0x875e982D12c36E3F37E3D3f4c9b3c69B98065018","0xbE24Aa69B65Dc1Ce3668Ca008f912Fe09B6e567b","0xB71D39fe7A527c8804549FaDe5dB76046F3a1367"]
+  - [0,0,0,0,0]
+amount: 0
+files:
+  - bin: Elections.bin
+    abi: Elections.abi
+    sol: challenge.sol
+    visibility: 1
+flag: APT42{La_pr3s1dENce_C_p@5_p0uR_mA1nT3naNt}
+check: check.py
