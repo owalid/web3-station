@@ -93,6 +93,8 @@ def load_config():
             for key, value in data.items():
                 with open(value['path']) as sub_file:
                     yml_data = yaml.load(sub_file, Loader=SafeLoader)
+                    if value['visibility'] == 0:
+                        continue
                     yml_data['path'] = os.path.dirname(value['path'])
                     yml_data['visibility'] = value['visibility']
                     final_data.append(yml_data)
