@@ -15,6 +15,8 @@ WEB3_PRIVATE_KEY=getenv("WEB3_PRIVATE_KEY")
 WEB3_PUBLIC_KEY=getenv("WEB3_PUBLIC_KEY")
 WEB3_RPC_URL=getenv("WEB3_RPC_URL")
 
+nonce = 0
+
 class Contract:
 
     def __init__(self, challenge_index: int, conn: socket, logger: logging.Logger):
@@ -29,6 +31,16 @@ class Contract:
 
     def deploy(self):
         for file in self.challenge_config['files']:
+
+            # If 2 user would submit a transaction roughly at the same time, the nonce obtained trough
+            # get_transaction_count would not get incremented, thus the second would get rejected
+            # to avoid this, we keep a inner nonce which get incremented at every transaction and
+            # gets updated if it's value is too low
+            global nonce
+            nodenonce = self.web3.eth.get_transaction_count(WEB3_PUBLIC_KEY)
+            if nonce < nodenonce:
+                nonce = nodenonce
+
             abi_path = f"{self.challenge_config['path']}/{file['abi']}"
             bin_path = f"{self.challenge_config['path']}/{file['bin']}"
             self.abi = open(abi_path, 'r').read()
@@ -40,9 +52,13 @@ class Contract:
                 'from': WEB3_PUBLIC_KEY,
                 'gasPrice': self.web3.eth.gas_price,
                 'chainId': Chain_id,
-                'nonce': self.web3.eth.get_transaction_count(WEB3_PUBLIC_KEY),
+                'nonce': nonce,
                 'value': self.challenge_config['amount']
             })
+
+            # Increase the nonce
+            nonce += 1
+
             signed = self.web3.eth.account.sign_transaction(construct_txn, private_key=WEB3_PRIVATE_KEY)
             tx_hash = self.web3.eth.send_raw_transaction(signed.rawTransaction)
             tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
